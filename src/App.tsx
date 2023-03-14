@@ -1,24 +1,23 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useEffect } from "react";
+import "./App.css";
+import { getUserAuthStatus } from "./helper";
+import { Routes, Route,useNavigate } from "react-router-dom";
+import ToDo from "./ToDo";
+import SignIn from "./SignIn";
 
 function App() {
+  let navigate = useNavigate();
+  useEffect(() => {
+    if (!getUserAuthStatus()) {
+      navigate("/signin")
+    }
+  }, []);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Routes>
+        <Route path="/" element={<ToDo />} />
+        <Route path="/signin" element={<SignIn />} />
+      </Routes>
     </div>
   );
 }
