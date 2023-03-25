@@ -2,8 +2,10 @@ import { Form, Input, Button, notification } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { getUserAuthStatus, setUserAuthStatus } from "./helper";
+import { useDispatch } from "react-redux/es/exports";
 function SignIn() {
   let navigate = useNavigate();
+  let dipatch = useDispatch();
   const onFinish = ({
     username,
     password,
@@ -16,6 +18,9 @@ function SignIn() {
       notification.open({
         type: "success",
         message: "Login Successful!.",
+      });
+      dipatch({
+        type: "LOGIN_SUCCESS",
       });
       setUserAuthStatus("true");
     } else {

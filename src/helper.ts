@@ -1,4 +1,5 @@
 import { notification } from "antd";
+import { listItemType } from "./types";
 export const getUserAuthStatus = () => Boolean(localStorage.getItem("isLogin")); // "true" or "false"
 
 export const setUserAuthStatus = (value: string) =>
@@ -6,20 +7,33 @@ export const setUserAuthStatus = (value: string) =>
 
 export const removeUserAuthStatus = () => localStorage.removeItem("isLogin");
 
-export const addNewItemToList = (value: {
-  title: string;
-  description: string;
+export const addOrUpdateItemToList = ({
+  value,
+  type,
+}: {
+  value: listItemType;
+  type: "add" | "update";
 }) => {
   let values = getTheList() || [];
-  let itemAlreadyExist = values.find(
-    (v: { title: string; description: string }) => v.title.toLowerCase() == value.title.toLowerCase()
-  );
-  if (itemAlreadyExist) {
-    return false;
+  let itemIndex = values?.length // ? (optional chaining)
+    ? values.findIndex(
+        // will be a problem for the updation
+        (v: listItemType) => v.title.toLowerCase() == value.title.toLowerCase()
+      )
+    : false;
+  if (type == "add") {
+    if (itemIndex >= 0) {
+      return false;
+    }
+    values.push(value);
   }
-  values.push(value);
+  if (type == "update") {
+    values[itemIndex] = value;
+    console.log({ updatedItem: values[itemIndex], itemIndex });
+  }
+
   localStorage.setItem("list", JSON.stringify(values));
-  return true
+  return true;
 };
 
 export const getTheList = () =>
